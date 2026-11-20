@@ -1,0 +1,27 @@
+/* Styles applied to exported PDF / HTML / printed output. */
+html, body { margin: 0; padding: 0; background: #ffffff; }
+
+.markdown-body {
+  box-sizing: border-box;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #1f2328;
+  background: #ffffff;
+  font-size: 15px;
+}
+
+@media print {
+  .markdown-body { max-width: none; padding: 0; font-size: 12pt; }
+  .page-break { page-break-after: always; break-after: page; height: 0; border: 0; margin: 0; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; page-break-after: avoid; }
+  pre, blockquote, table, img, figure { break-inside: avoid; page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  a { color: #0969da; text-decoration: none; }
+  pre { white-space: pre-wrap; word-wrap: break-word; }
+}
+
+.page-break { height: 0; }
+
+/* highlight.js adds its own padding/background; let the markdown pre handle it */
+.markdown-body pre code.hljs { padding: 0; background: transparent; }

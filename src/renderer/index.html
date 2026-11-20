@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src * data: file: blob:; font-src 'self' data:; media-src * file:;">
+  <title>MarkPDF</title>
+
+  <link rel="stylesheet" href="../../node_modules/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="../../node_modules/codemirror/addon/dialog/dialog.css">
+  <link rel="stylesheet" id="md-light" href="../../node_modules/github-markdown-css/github-markdown-light.css">
+  <link rel="stylesheet" id="md-dark" href="../../node_modules/github-markdown-css/github-markdown-dark.css" disabled>
+  <link rel="stylesheet" id="hl-light" href="../../node_modules/@highlightjs/cdn-assets/styles/github.min.css">
+  <link rel="stylesheet" id="hl-dark" href="../../node_modules/@highlightjs/cdn-assets/styles/github-dark.min.css" disabled>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="toolbar" role="toolbar" aria-label="Formatting">
+    <div class="group">
+      <button data-action="new" title="New (Ctrl+N)"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v6M9 15h6"/></svg></button>
+      <button data-action="open" title="Open (Ctrl+O)"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
+      <button data-action="save" title="Save (Ctrl+S)"><svg viewBox="0 0 24 24"><path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v5h8V3M7 21v-7h10v7"/></svg></button>
+    </div>
+    <div class="group">
+      <button data-action="undo" title="Undo (Ctrl+Z)"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+      <button data-action="redo" title="Redo (Ctrl+Y)"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+    </div>
+    <div class="group">
+      <button data-action="h1" title="Heading 1 (Ctrl+1)" class="txt">H1</button>
+      <button data-action="h2" title="Heading 2 (Ctrl+2)" class="txt">H2</button>
+      <button data-action="h3" title="Heading 3 (Ctrl+3)" class="txt">H3</button>
+      <button data-action="bold" title="Bold (Ctrl+B)" class="txt"><b>B</b></button>
+      <button data-action="italic" title="Italic (Ctrl+I)" class="txt"><i>I</i></button>
+      <button data-action="strike" title="Strikethrough (Ctrl+Shift+X)" class="txt"><s>S</s></button>
+      <button data-action="code" title="Inline code (Ctrl+`)"><svg viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg></button>
+    </div>
+    <div class="group">
+      <button data-action="ul" title="Bulleted list (Ctrl+Shift+8)"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" class="fill"/><circle cx="4.5" cy="12" r="1" class="fill"/><circle cx="4.5" cy="18" r="1" class="fill"/></svg></button>
+      <button data-action="ol" title="Numbered list (Ctrl+Shift+7)"><svg viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M4 4.5h1.5V9M4 9h3M4 14.5h3l-3 4h3"/></svg></button>
+      <button data-action="task" title="Task list (Ctrl+Shift+9)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="6" height="6" rx="1"/><path d="m4.5 7 1.2 1.2L8 5.8M12 7h9M3 14h6v6H3zM12 17h9"/></svg></button>
+      <button data-action="quote" title="Quote (Ctrl+Shift+.)"><svg viewBox="0 0 24 24"><path d="M4 5v14M9 8h11M9 12h11M9 16h7"/></svg></button>
+    </div>
+    <div class="group">
+      <button data-action="link" title="Link (Ctrl+K)"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
+      <button data-action="image" title="Image (Ctrl+Shift+I)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
+      <button data-action="codeblock" title="Code block (Ctrl+Shift+C)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m9 10-2 2 2 2M15 10l2 2-2 2"/></svg></button>
+      <button data-action="table" title="Table (Ctrl+Shift+T)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16M15 4v16"/></svg></button>
+      <button data-action="hr" title="Horizontal rule (Ctrl+Shift+-)"><svg viewBox="0 0 24 24"><path d="M3 12h18"/></svg></button>
+      <button data-action="pagebreak" title="Page break for PDF (Ctrl+Enter)"><svg viewBox="0 0 24 24"><path d="M6 3v5h12V3M6 21v-5h12v5M3 12h3M9 12h2M13 12h2M18 12h3"/></svg></button>
+    </div>
+    <div class="spacer"></div>
+    <div class="group seg" role="group" aria-label="Layout">
+      <button data-action="layoutEditor" data-layout="editor" title="Editor only (Ctrl+Alt+1)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg></button>
+      <button data-action="layoutSplit" data-layout="split" title="Split view (Ctrl+Alt+2)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg></button>
+      <button data-action="layoutPreview" data-layout="preview" title="Preview only (Ctrl+Alt+3)"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+    <div class="group">
+      <button data-action="toggleOutline" id="outlineBtn" title="Outline (Ctrl+Shift+O)"><svg viewBox="0 0 24 24"><path d="M4 6h16M8 12h12M12 18h8"/></svg></button>
+      <button data-action="toggleTheme" title="Toggle light/dark theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+    <button class="primary" data-action="exportPdf" title="Export as PDF (Ctrl+E)">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Export PDF</span>
+    </button>
+  </header>
+
+  <main id="workspace" class="layout-split">
+    <aside id="outline" hidden>
+      <div class="pane-title">Outline</div>
+      <nav id="outlineList"></nav>
+    </aside>
+    <section id="editorPane" class="pane">
+      <textarea id="editor"></textarea>
+    </section>
+    <div id="divider" role="separator" aria-orientation="vertical" tabindex="0" title="Drag to resize"></div>
+    <section id="previewPane" class="pane">
+      <article id="preview" class="markdown-body"></article>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span id="stFile">Untitled</span>
+    <span id="stSaved"></span>
+    <span class="spacer"></span>
+    <span id="stPos">Ln 1, Col 1</span>
+    <span id="stWords">0 words</span>
+    <span id="stChars">0 chars</span>
+    <span id="stRead">0 min read</span>
+    <span>UTF-8</span>
+    <span>Markdown</span>
+  </footer>
+
+  <div id="dropOverlay" hidden><div>Drop a Markdown file to open it</div></div>
+
+  <!-- PDF options dialog -->
+  <dialog id="pdfDialog">
+    <form method="dialog">
+      <h2>Export as PDF</h2>
+      <label>Page size
+        <select name="pageSize">
+          <option>A4</option><option>Letter</option><option>Legal</option>
+          <option>A3</option><option>A5</option><option>Tabloid</option>
+        </select>
+      </label>
+      <label>Orientation
+        <select name="landscape">
+          <option value="false">Portrait</option>
+          <option value="true">Landscape</option>
+        </select>
+      </label>
+      <label>Margins
+        <select name="margin">
+          <option value="none">None</option>
+          <option value="narrow">Narrow (0.5 in)</option>
+          <option value="normal">Normal (0.8 in)</option>
+          <option value="wide">Wide (1 in / 1.25 in)</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" name="pageNumbers"> Page numbers in footer</label>
+      <label class="check"><input type="checkbox" name="openAfterExport"> Open the PDF after export</label>
+      <p class="hint">Tip: insert <code>&lt;!-- pagebreak --&gt;</code> (Ctrl+Enter) to start a new page.</p>
+      <menu>
+        <button value="cancel" formnovalidate>Cancel</button>
+        <button value="ok" class="primary">Export</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <!-- Cheat sheet -->
+  <dialog id="cheatDialog">
+    <form method="dialog">
+      <h2>Markdown Cheat Sheet</h2>
+      <div class="cheat">
+        <table>
+          <tr><td><code># Heading 1</code></td><td>Heading (1–6 #)</td></tr>
+          <tr><td><code>**bold**</code></td><td><b>bold</b></td></tr>
+          <tr><td><code>*italic*</code></td><td><i>italic</i></td></tr>
+          <tr><td><code>~~strike~~</code></td><td><s>strike</s></td></tr>
+          <tr><td><code>`code`</code></td><td>inline code</td></tr>
+          <tr><td><code>[text](https://url)</code></td><td>link</td></tr>
+          <tr><td><code>![alt](image.png)</code></td><td>image (relative to the .md file)</td></tr>
+          <tr><td><code>- item</code></td><td>bulleted list</td></tr>
+          <tr><td><code>1. item</code></td><td>numbered list</td></tr>
+          <tr><td><code>- [ ] task</code></td><td>task list</td></tr>
+          <tr><td><code>&gt; quote</code></td><td>blockquote</td></tr>
+          <tr><td><code>```js … ```</code></td><td>code block with highlighting</td></tr>
+          <tr><td><code>| a | b |</code><br><code>|---|---|</code></td><td>table</td></tr>
+          <tr><td><code>---</code></td><td>horizontal rule</td></tr>
+          <tr><td><code>&lt;!-- pagebreak --&gt;</code></td><td>page break in PDF</td></tr>
+        </table>
+      </div>
+      <menu><button value="ok" class="primary">Close</button></menu>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../../node_modules/codemirror/lib/codemirror.js"></script>
+  <script src="../../node_modules/codemirror/addon/mode/overlay.js"></script>
+  <script src="../../node_modules/codemirror/mode/xml/xml.js"></script>
+  <script src="../../node_modules/codemirror/mode/javascript/javascript.js"></script>
+  <script src="../../node_modules/codemirror/mode/css/css.js"></script>
+  <script src="../../node_modules/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+  <script src="../../node_modules/codemirror/mode/python/python.js"></script>
+  <script src="../../node_modules/codemirror/mode/shell/shell.js"></script>
+  <script src="../../node_modules/codemirror/mode/markdown/markdown.js"></script>
+  <script src="../../node_modules/codemirror/mode/gfm/gfm.js"></script>
+  <script src="../../node_modules/codemirror/addon/edit/continuelist.js"></script>
+  <script src="../../node_modules/codemirror/addon/edit/closebrackets.js"></script>
+  <script src="../../node_modules/codemirror/addon/selection/active-line.js"></script>
+  <script src="../../node_modules/codemirror/addon/display/placeholder.js"></script>
+  <script src="../../node_modules/codemirror/addon/dialog/dialog.js"></script>
+  <script src="../../node_modules/codemirror/addon/search/searchcursor.js"></script>
+  <script src="../../node_modules/codemirror/addon/search/search.js"></script>
+  <script src="../../node_modules/codemirror/addon/search/jump-to-line.js"></script>
+  <script src="../../node_modules/marked/marked.min.js"></script>
+  <script src="../../node_modules/dompurify/dist/purify.min.js"></script>
+  <script src="../../node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

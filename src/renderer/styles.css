@@ -1,0 +1,340 @@
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f6f8fa;
+  --bg-hover: #eaeef2;
+  --border: #d0d7de;
+  --text: #1f2328;
+  --text-muted: #656d76;
+  --accent: #0969da;
+  --accent-text: #ffffff;
+  --editor-bg: #ffffff;
+  --gutter-bg: #f6f8fa;
+  --cursor: #1f2328;
+  --selection: #b6d6fd;
+  --active-line: #f3f6fa;
+  --cm-header: #0550ae;
+  --cm-strong: #1f2328;
+  --cm-em: #1f2328;
+  --cm-link: #0969da;
+  --cm-url: #8250df;
+  --cm-quote: #116329;
+  --cm-code: #cf222e;
+  --cm-list: #953800;
+  --cm-comment: #6e7781;
+  --editor-font-size: 15px;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d1117;
+  --bg-soft: #161b22;
+  --bg-hover: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8d96a0;
+  --accent: #2f81f7;
+  --accent-text: #ffffff;
+  --editor-bg: #0d1117;
+  --gutter-bg: #0d1117;
+  --cursor: #e6edf3;
+  --selection: #264f78;
+  --active-line: #161b22;
+  --cm-header: #79c0ff;
+  --cm-strong: #e6edf3;
+  --cm-em: #e6edf3;
+  --cm-link: #58a6ff;
+  --cm-url: #d2a8ff;
+  --cm-quote: #7ee787;
+  --cm-code: #ff7b72;
+  --cm-list: #ffa657;
+  --cm-comment: #8b949e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.4 "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ---------------- Toolbar ---------------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.toolbar .group { display: flex; gap: 1px; padding-right: 6px; border-right: 1px solid var(--border); }
+.toolbar .group:last-of-type { border-right: 0; }
+.toolbar .spacer { flex: 1; }
+
+.toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.toolbar button.txt { font-size: 13px; font-weight: 600; }
+.toolbar button:hover { background: var(--bg-hover); }
+.toolbar button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.toolbar button.active { background: var(--bg-hover); border-color: var(--border); }
+.toolbar svg {
+  width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.toolbar svg .fill { fill: currentColor; }
+
+.toolbar button.primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  padding: 0 12px;
+  font-weight: 600;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.toolbar button.primary:hover { filter: brightness(1.08); background: var(--accent); }
+
+/* ---------------- Workspace ---------------- */
+
+#workspace {
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pane { min-width: 0; min-height: 0; overflow: hidden; }
+#editorPane { flex: 1 1 50%; display: flex; }
+#previewPane { flex: 1 1 50%; overflow: auto; background: var(--bg); }
+
+#divider {
+  flex: 0 0 5px;
+  cursor: col-resize;
+  background: var(--border);
+  border-left: 2px solid var(--bg-soft);
+  border-right: 2px solid var(--bg-soft);
+}
+#divider:hover, #divider.dragging { background: var(--accent); }
+
+#workspace.layout-editor #previewPane,
+#workspace.layout-editor #divider,
+#workspace.layout-preview #editorPane,
+#workspace.layout-preview #divider { display: none; }
+#workspace.layout-editor #editorPane,
+#workspace.layout-preview #previewPane { flex-basis: 100% !important; }
+
+#outline {
+  flex: 0 0 220px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-soft);
+  overflow: auto;
+}
+#outline[hidden] { display: none; }
+.pane-title {
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+}
+#outlineList a {
+  display: block;
+  padding: 3px 12px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 4px;
+  margin: 0 4px;
+  cursor: pointer;
+}
+#outlineList a:hover { background: var(--bg-hover); }
+#outlineList a.l2 { padding-left: 24px; }
+#outlineList a.l3 { padding-left: 36px; color: var(--text-muted); }
+#outlineList a.l4, #outlineList a.l5, #outlineList a.l6 { padding-left: 48px; color: var(--text-muted); font-size: 12px; }
+#outlineList .empty { padding: 4px 12px; color: var(--text-muted); }
+
+/* ---------------- Editor (CodeMirror) ---------------- */
+
+.CodeMirror {
+  flex: 1;
+  height: 100%;
+  background: var(--editor-bg);
+  color: var(--text);
+  font-family: "Cascadia Code", "Cascadia Mono", Consolas, "Courier New", monospace;
+  font-size: var(--editor-font-size);
+  line-height: 1.6;
+}
+.CodeMirror-lines { padding: 16px 0 50vh; }
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like { padding: 0 20px; }
+.CodeMirror-gutters { background: var(--gutter-bg); border-right: 1px solid var(--border); }
+.CodeMirror-linenumber { color: var(--text-muted); padding: 0 8px 0 12px; }
+.CodeMirror-cursor { border-left: 2px solid var(--cursor); }
+.CodeMirror-selected, .CodeMirror-focused .CodeMirror-selected { background: var(--selection) !important; }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: var(--selection); }
+.CodeMirror-activeline-background { background: var(--active-line); }
+.CodeMirror-placeholder { color: var(--text-muted) !important; }
+
+.cm-s-default .cm-header { color: var(--cm-header); font-weight: 700; }
+.cm-s-default .cm-header-1 { font-size: 1.3em; }
+.cm-s-default .cm-header-2 { font-size: 1.18em; }
+.cm-s-default .cm-header-3 { font-size: 1.08em; }
+.cm-s-default .cm-strong { color: var(--cm-strong); font-weight: 700; }
+.cm-s-default .cm-em { color: var(--cm-em); font-style: italic; }
+.cm-s-default .cm-link { color: var(--cm-link); text-decoration: none; }
+.cm-s-default .cm-url, .cm-s-default .cm-string.cm-url { color: var(--cm-url); }
+.cm-s-default .cm-quote { color: var(--cm-quote); font-style: italic; }
+.cm-s-default .cm-comment { color: var(--cm-code); }
+.cm-s-default .cm-variable-2, .cm-s-default .cm-variable-3 { color: var(--cm-list); }
+.cm-s-default .cm-hr { color: var(--cm-comment); }
+.cm-s-default .cm-tag { color: var(--cm-header); }
+.cm-s-default .cm-attribute { color: var(--cm-list); }
+.cm-s-default .cm-string { color: var(--cm-quote); }
+.cm-s-default .cm-keyword { color: var(--cm-code); }
+.cm-s-default .cm-formatting { color: var(--cm-comment); }
+.cm-s-default .cm-strikethrough { text-decoration: line-through; }
+
+.CodeMirror-dialog { background: var(--bg-soft); color: var(--text); border-color: var(--border) !important; padding: 6px 12px; }
+.CodeMirror-dialog input { color: var(--text); font: inherit; }
+.CodeMirror-search-hint { color: var(--text-muted); }
+.cm-searching { background: rgba(255, 200, 0, .35); }
+
+/* ---------------- Preview ---------------- */
+
+#preview.markdown-body {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 40px 50vh;
+  background: transparent;
+}
+#preview .page-break {
+  border-top: 1px dashed var(--border);
+  margin: 24px 0;
+  position: relative;
+}
+#preview .page-break::after {
+  content: "page break";
+  position: absolute;
+  top: -9px; right: 0;
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--bg);
+  padding: 0 6px;
+}
+
+/* ---------------- Status bar ---------------- */
+
+.statusbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 3px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.statusbar .spacer { flex: 1; }
+#stFile { color: var(--text); max-width: 45vw; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------------- Dialogs ---------------- */
+
+dialog {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px 24px;
+  width: min(420px, 92vw);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .25);
+}
+#cheatDialog { width: min(560px, 92vw); }
+dialog::backdrop { background: rgba(0, 0, 0, .35); }
+dialog h2 { margin: 0 0 16px; font-size: 16px; }
+dialog label { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 10px 0; }
+dialog label.check { justify-content: flex-start; }
+dialog select {
+  min-width: 190px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-soft);
+  color: var(--text);
+  font: inherit;
+}
+dialog .hint { color: var(--text-muted); font-size: 12px; margin: 14px 0 0; }
+dialog code { font-family: Consolas, monospace; background: var(--bg-soft); padding: 1px 4px; border-radius: 4px; }
+dialog menu { display: flex; justify-content: flex-end; gap: 8px; padding: 0; margin: 20px 0 0; }
+dialog menu button {
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-soft);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+dialog menu button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+.cheat { max-height: 60vh; overflow: auto; }
+.cheat table { border-collapse: collapse; width: 100%; }
+.cheat td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+
+/* ---------------- Drop overlay & toast ---------------- */
+
+#dropOverlay {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(9, 105, 218, .12);
+  border: 3px dashed var(--accent);
+  z-index: 50;
+  pointer-events: none;
+}
+#dropOverlay[hidden] { display: none; }
+#dropOverlay div { background: var(--bg); padding: 14px 22px; border-radius: 8px; font-size: 15px; font-weight: 600; }
+
+#toast {
+  position: fixed;
+  bottom: 36px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text);
+  color: var(--bg);
+  padding: 8px 16px;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+  z-index: 60;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* highlight.js adds its own padding/background; let the markdown pre handle it */
+.markdown-body pre code.hljs { padding: 0; background: transparent; }

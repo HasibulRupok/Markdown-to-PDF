@@ -1,0 +1,64 @@
+{
+  "name": "markdown-to-pdf",
+  "productName": "MarkPDF",
+  "version": "1.0.0",
+  "description": "A desktop Markdown editor with live preview and one-click PDF export.",
+  "main": "src/main.js",
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "icon": "electron scripts/make-icon.js",
+    "dist": "electron-builder --win nsis",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "dependencies": {
+    "@highlightjs/cdn-assets": "11.10.0",
+    "codemirror": "5.65.18",
+    "dompurify": "3.2.3",
+    "github-markdown-css": "5.8.1",
+    "marked": "12.0.2"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.markpdf.app",
+    "productName": "MarkPDF",
+    "copyright": "Copyright (c) 2026 Your Name",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MarkPDF"
+    },
+    "fileAssociations": [
+      {
+        "ext": [
+          "md",
+          "markdown"
+        ],
+        "name": "Markdown Document",
+        "description": "Markdown Document",
+        "role": "Editor"
+      }
+    ]
+  }
+}
