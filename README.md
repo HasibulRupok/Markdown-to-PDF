@@ -49,7 +49,7 @@
 
 ## Install (Windows)
 
-1. Download `MarkPDF Setup x.y.z.exe` from the [Releases](../../releases) page, or build it yourself (see below).
+1. Download `MarkPDF Setup 1.0.0.exe` from the [Releases](../../releases) page, or build it yourself (see below).
 2. Run the installer. You can choose the install folder; desktop and Start-menu shortcuts are created.
 3. Windows SmartScreen may warn you because the installer is not code-signed. Click **More info → Run anyway**.
 
